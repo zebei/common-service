@@ -1,0 +1,14 @@
+
+
+spring:
+  application:
+    name: north-pole-service
+  profiles:
+    active: local
+
+mybatis-plus:
+  mapper-locations:
+    classpath*:/mapper/**/*.xml
+
+
+

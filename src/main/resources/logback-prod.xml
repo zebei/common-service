@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <property name="LOG_HOME" value="/data/logs"/>
+    <property name="LOG_FILE" value="north-pole"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 按照每天生成日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${LOG_HOME}/${LOG_FILE}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--滚动日志文件输出的文件名-->
+            <fileNamePattern>${LOG_HOME}/${LOG_FILE}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!--日志文件保留周期-->
+            <MaxHistory>30</MaxHistory>
+
+            <!-- 当天日志按照文件大小拆分 -->
+            <!--<timeBasedFileNamingAndTriggeringPolicy-->
+            <!--class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+            <!--<MaxFileSize>100MB</MaxFileSize>-->
+            <!--</timeBasedFileNamingAndTriggeringPolicy>-->
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%L] - %msg%n</pattern>
+            <!-- 采用异步io日志 -->
+            <!--<ImmediateFlush>false</ImmediateFlush>-->
+        </encoder>
+    </appender>
+
+    <!-- 开启异步io日志，配置在encoder中添加<ImmediateFlush>false</ImmediateFlush> -->
+    <!--<appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">-->
+    <!--&lt;!&ndash; 队列深度剩余低于20%时，不丢弃任何event &ndash;&gt;-->
+    <!--<discardingThreshold>0</discardingThreshold>-->
+    <!--&lt;!&ndash; 异步日志深度，默认值：256 &ndash;&gt;-->
+    <!--<queueSize>5</queueSize>-->
+    <!--&lt;!&ndash; 不提取调用者信息，提高日志性能 &ndash;&gt;-->
+    <!--<includeCallerData>false</includeCallerData>-->
+    <!--<appender-ref ref="FILE" />-->
+    <!--</appender>-->
+
+    <logger name="org.apache.ibatis" level="INFO"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.Statement" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+    <logger name="java.sql.ResultSet"  level="INFO"/>
+    <!-- 打印sql语句时，将mapper包路径设置为DEBUG或将项目包跟目录设置为DEBUG -->
+<!--    <logger name="com.izs.common.mapper.mapping" level="INFO"/>-->
+    <logger name="com.netflix" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="com.izs" level="INFO"/>
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+        <!-- 生产上删除STDOUT配置 -->
+        <!--<appender-ref ref="STDOUT"/>-->
+    </root>
+</configuration>
